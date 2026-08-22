@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm install && npm run build:web",
+  "outputDirectory": "apps/web/.next",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api" }
+  ]
+}
