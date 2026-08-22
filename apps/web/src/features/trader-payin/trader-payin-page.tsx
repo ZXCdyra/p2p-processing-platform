@@ -174,21 +174,23 @@ export function TraderPayInPage() {
   useSelectedRowSync(data?.orders, selectedOrder, setSelectedOrder);
   useSelectedRowSync(data?.orders, receiptOrder, setReceiptOrder);
 
+  const ordersList = Array.isArray(data?.orders) ? data.orders : [];
+
   const finalizeMenuOrder = useMemo(() => {
     if (!finalizeMenu) return null;
-    const fromList = data?.orders.find((order) => order.id === finalizeMenu.orderId);
+    const fromList = ordersList.find((order) => order.id === finalizeMenu.orderId);
     if (fromList) return fromList;
     if (selectedOrder?.id === finalizeMenu.orderId) return selectedOrder;
     return null;
-  }, [data?.orders, finalizeMenu, selectedOrder]);
+  }, [ordersList, finalizeMenu, selectedOrder]);
 
   const appealDecisionMenuOrder = useMemo(() => {
     if (!appealDecisionMenu) return null;
-    const fromList = data?.orders.find((order) => order.id === appealDecisionMenu.orderId);
+    const fromList = ordersList.find((order) => order.id === appealDecisionMenu.orderId);
     if (fromList) return fromList;
     if (selectedOrder?.id === appealDecisionMenu.orderId) return selectedOrder;
     return null;
-  }, [appealDecisionMenu, data?.orders, selectedOrder]);
+  }, [appealDecisionMenu, ordersList, selectedOrder]);
 
   function openFinalize(kind: FinalizeKind, order: TraderPayInOrderDto) {
     setFinalizeDialog({
@@ -277,7 +279,7 @@ export function TraderPayInPage() {
 
   const allowedStatusesForTab =
     listTab === 'current' ? PAYIN_TRADER_CURRENT_STATUSES : PAYIN_TRADER_HISTORY_STATUSES;
-  const statusOptions = allowedStatusesForTab.map((s) => ({
+  const statusOptions = (Array.isArray(allowedStatusesForTab) ? allowedStatusesForTab : []).map((s) => ({
     value: s,
     label: statusLabels[s as PayInOrderStatus] ?? s,
   }));
@@ -286,7 +288,9 @@ export function TraderPayInPage() {
   const clockOffsetMs = data?.clockOffsetMs ?? 0;
 
   const columns = useMemo(
-    () => [
+    () => {
+      const orders = Array.isArray(data?.orders) ? data.orders : [];
+      return [
       {
         key: 'id',
         header: t('colOrderId'),
