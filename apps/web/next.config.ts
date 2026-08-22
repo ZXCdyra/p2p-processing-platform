@@ -1,43 +1,11 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import path from 'node:path';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
-const includePlayground =
-  process.env.NODE_ENV !== 'production' ||
-  process.env.INCLUDE_EXTERNAL_PLAYGROUND === 'true';
-
-const playgroundStub = path.join(
-  process.cwd(),
-  'src/features/external-api-playground.stub.tsx',
-);
-
 const nextConfig: NextConfig = {
   output: 'standalone',
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@p2p/shared': path.join(__dirname, '../../packages/shared/src'),
-      '@p2p/config': path.join(__dirname, '../../packages/config/src'),
-      '@p2p/prisma': path.join(__dirname, '../../packages/prisma/src'),
-    };
-    if (!includePlayground) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '@/features/external-api-playground': playgroundStub,
-      };
-    }
-    return config;
-  },
+  transpilePackages: ['@p2p/shared', '@p2p/config'],
 };
-
-if (!includePlayground) {
-  nextConfig.turbopack = {
-    resolveAlias: {
-      '@/features/external-api-playground': playgroundStub,
-    },
-  };
-}
 
 export default withNextIntl(nextConfig);
