@@ -27,7 +27,7 @@
         "./src/*"
       ],
       "@p2p/shared": [
-        "../../packages/shared/src"
+        "./src/@p2p/shared"
       ]
     }
   },
