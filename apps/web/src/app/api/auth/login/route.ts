@@ -1,28 +1,19 @@
 export async function POST(request: Request) {
   const { email, password } = (await request.json()) as { email: string; password: string };
 
-  // Validate credentials
-  if (!email || !password) {
+  if (!email) {
     return new Response(
-      JSON.stringify({ code: 'VALIDATION_ERROR', message: 'Email and password are required' }),
+      JSON.stringify({ code: 'VALIDATION_ERROR', message: 'Email is required' }),
       { status: 400, headers: { 'Content-Type': 'application/json' } },
     );
   }
 
-  // Check for demo credentials
-  if (password !== 'password123' && email !== 'test@test.com') {
-    return new Response(
-      JSON.stringify({ code: 'AUTH_FAILED', message: 'Invalid email or password' }),
-      { status: 401, headers: { 'Content-Type': 'application/json' } },
-    );
-  }
-
-  // Determine role based on email
-  let role = 'TRADER';
-  if (email.includes('admin')) role = 'ADMIN';
-  else if (email.includes('owner')) role = 'OWNER';
-  else if (email.includes('merchant')) role = 'MERCHANT';
-  else if (email.includes('payout')) role = 'PAYOUT_TRADER';
+  // Accept any email + any password (including empty) for demo
+  const role = email.includes('admin') ? 'ADMIN' 
+    : email.includes('merchant') ? 'MERCHANT' 
+    : email.includes('owner') ? 'OWNER' 
+    : email.includes('payout') ? 'PAYOUT_TRADER' 
+    : 'TRADER';
 
   const userId = email.split('@')[0] || 'user';
   const now = Date.now();
@@ -31,14 +22,14 @@ export async function POST(request: Request) {
     id: `usr-${userId}`,
     email,
     role,
-    exp: Math.floor(now / 1000) + 3600, // 1 hour
+    exp: Math.floor(now / 1000) + 3600,
     iat: Math.floor(now / 1000),
   });
 
   const refreshToken = createJwt({
     sub: `usr-${userId}`,
     role,
-    exp: Math.floor(now / 1000) + 604800, // 7 days
+    exp: Math.floor(now / 1000) + 604800,
     iat: Math.floor(now / 1000),
   });
 
@@ -60,6 +51,6 @@ export async function POST(request: Request) {
 function createJwt(payload: Record<string, unknown>): string {
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
   const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
-  const signature = Buffer.from(`signature-${header}.${body}`).toString('base64url');
+  const signature = Buffer.from(`sig-${header}.${body}`).toString('base64url');
   return `${header}.${body}.${signature}`;
 }
