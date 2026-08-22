@@ -62,9 +62,9 @@ export function TraderDashboardWalletListSection() {
   const loading = balancesLoading || usdtLoading;
 
   const wallets = useMemo(() => {
-    const rows = [...(balances ?? [])];
+    const rows = Array.isArray(balances) ? [...balances] : [];
     const upperCodes = new Set(
-      rows.map((r) => currencyCodeFromUnknown(r.currency).toUpperCase()).filter(Boolean),
+      rows.map((r: TraderMeBalanceRow) => currencyCodeFromUnknown(r.currency).toUpperCase()).filter(Boolean),
     );
     if (usdtWallet && !upperCodes.has('USDT')) {
       rows.push({
@@ -72,10 +72,10 @@ export function TraderDashboardWalletListSection() {
         traderId: '',
         currency: 'USDT',
         amount: usdtWallet.balance_usdt,
-      });
+      } as TraderMeBalanceRow);
     }
     return rows
-      .map((row) => {
+      .map((row: TraderMeBalanceRow) => {
         const currency = currencyCodeFromUnknown(row.currency).toUpperCase();
         const amount =
           currency === 'USDT' && usdtWallet ? usdtWallet.balance_usdt : parseAmount(row.amount);
@@ -87,8 +87,8 @@ export function TraderDashboardWalletListSection() {
             currency === 'USDT' && usdtWallet ? usdtWallet.overdraft_limit_usdt : undefined,
         };
       })
-      .filter((w) => w.currency.length > 0)
-      .sort((a, b) => {
+      .filter((w: any) => w.currency.length > 0)
+      .sort((a: any, b: any) => {
         if (a.isCrypto !== b.isCrypto) return a.isCrypto ? 1 : -1;
         return a.currency.localeCompare(b.currency);
       });
@@ -115,7 +115,7 @@ export function TraderDashboardWalletListSection() {
       ) : (
         <div className="flex gap-4 overflow-x-auto pb-1 scroll-smooth">
           {wallets.map((w, idx) => {
-            const preset = WALLET_HIGHLIGHT_PRESETS[idx % WALLET_HIGHLIGHT_PRESETS.length]!;
+            const preset = WALLET_HIGHLIGHT_PRESETS[idx % (WALLET_HIGHLIGHT_PRESETS?.length ?? 1)]!;
             return (
               <article
                 key={w.currency}
