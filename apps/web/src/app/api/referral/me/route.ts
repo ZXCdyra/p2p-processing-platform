@@ -1,0 +1,24 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  return NextResponse.json({
+    referral_code: 'REF-USER-12345',
+    referral_link: 'https://platform.example.com/register?ref=REF-USER-12345',
+    invited_count: 5,
+    commissions_earned: 125.5,
+    currency: 'USD',
+  });
+}
+
+export async function GET_statistics(request: NextRequest) {
+  return NextResponse.json({
+    total_invited: 5,
+    active_invited: 3,
+    total_commissions: 125.5,
+    commissions_by_month: [
+      { month: '2024-01', count: 1, amount: 25 },
+      { month: '2024-02', count: 2, amount: 50 },
+      { month: '2024-03', count: 2, amount: 50.5 },
+    ],
+  });
+}
