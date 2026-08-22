@@ -1,9 +1,5 @@
 {
-  "buildCommand": "npm install && npm run build:web",
+  "buildCommand": "npm install --legacy-peer-deps && npm run build:web",
   "outputDirectory": "apps/web/.next",
-  "framework": "nextjs",
-  "installCommand": "npm install",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api" }
-  ]
+  "framework": "nextjs"
 }

@@ -15,8 +15,13 @@ const playgroundStub = path.join(
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  transpilePackages: ['@p2p/shared'],
   webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@p2p/shared': path.join(__dirname, '../../packages/shared/src'),
+      '@p2p/config': path.join(__dirname, '../../packages/config/src'),
+      '@p2p/prisma': path.join(__dirname, '../../packages/prisma/src'),
+    };
     if (!includePlayground) {
       config.resolve.alias = {
         ...config.resolve.alias,
