@@ -31,10 +31,11 @@ interface MerchantStats {
 export default function MerchantDashboard() {
   const { user } = useAuth();
 
-  const { data: balances = [], isLoading: balancesLoading } = useQuery<MerchantBalance[]>({
+  const { data: balancesRaw, isLoading: balancesLoading } = useQuery({
     queryKey: merchantKeys.balances(),
     queryFn: () => api.get(internalPaths.merchantBalances),
   });
+  const balances = Array.isArray(balancesRaw) ? balancesRaw : [];
 
   const { data: stats, isLoading: statsLoading } = useQuery<MerchantStats>({
     queryKey: merchantKeys.stats(),

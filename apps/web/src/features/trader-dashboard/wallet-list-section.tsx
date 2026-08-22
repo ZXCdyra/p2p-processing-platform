@@ -49,20 +49,18 @@ function parseAmount(raw: string | number): number {
 
 export function TraderDashboardWalletListSection() {
   const t = useTranslations('Trader.Wallet');
-  const { data: balances, isLoading: balancesLoading } = useQuery({
+  const { data: balancesData, isLoading: balancesLoading } = useQuery({
     queryKey: traderKeys.balancesMe(),
     queryFn: () => api.get<TraderMeBalanceRow[]>(internalPaths.traderMeBalances),
   });
-
   const { data: usdtWallet, isLoading: usdtLoading } = useQuery({
     queryKey: traderKeys.usdtWallet(),
     queryFn: () => api.get<UsdtWalletSummary>(internalPaths.traderUsdtWallet),
   });
-
   const loading = balancesLoading || usdtLoading;
-
+  const balances = Array.isArray(balancesData) ? balancesData : [];
   const wallets = useMemo(() => {
-    const rows = Array.isArray(balances) ? [...balances] : [];
+    const rows = [...balances];
     const upperCodes = new Set(
       rows.map((r: TraderMeBalanceRow) => currencyCodeFromUnknown(r.currency).toUpperCase()).filter(Boolean),
     );

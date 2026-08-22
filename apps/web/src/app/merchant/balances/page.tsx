@@ -85,10 +85,11 @@ export default function MerchantBalancesPage() {
         }).toString()}`
       : '';
 
-  const { data: balances = [], isLoading: balancesLoading } = useQuery<BalanceRow[]>({
+  const { data: balancesRaw, isLoading: balancesLoading } = useQuery({
     queryKey: merchantKeys.balances(),
     queryFn: () => api.get(internalPaths.merchantBalances),
   });
+  const balances = Array.isArray(balancesRaw) ? balancesRaw : [];
 
   const { data: summary, isLoading: sumLoading } = useQuery<BalanceSummary>({
     queryKey: merchantKeys.balanceSummary(sumFrom, sumTo),
