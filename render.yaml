@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: p2p-web
-    env: docker
-    repo: https://github.com/ZXCdyra/p2p-processing-platform.git
-    region: oregon
-    plan: free
-    dockerfile: Dockerfile
