@@ -1,0 +1,6 @@
+{
+  "name": "@p2p/config",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "sideEffects": false
+}

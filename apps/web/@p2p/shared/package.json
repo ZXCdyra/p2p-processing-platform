@@ -1,0 +1,6 @@
+{
+  "name": "@p2p/shared",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "sideEffects": false
+}
